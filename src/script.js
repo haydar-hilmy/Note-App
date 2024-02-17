@@ -41,21 +41,21 @@ const app = createApp({
     // function here
     methods: {
         submitForm() {
-            const notes = JSON.parse(localStorage.getItem('noteapp')) || [];
+            let notes2 = JSON.parse(localStorage.getItem('noteapp')) || [];
 
-            if (notes) {
-                let lastNote = notes[notes.length - 1];
+            if (notes2) {
+                let lastNote = notes2[notes2.length - 1];
                 let newId = lastNote ? parseInt(lastNote.id) + 1 : 1;
                 this.addNote.id = newId.toString();
 
-                notes.push(this.addNote);
+                notes2.push(this.addNote);
 
-                localStorage.setItem('noteapp', JSON.stringify(notes));
-                this.notes = notes;
+                localStorage.setItem('noteapp', JSON.stringify(notes2));
+                this.notes = notes2;
 
                 this.resetForm();
             } else {
-                notes = [this.addNote];
+                notes2 = [this.addNote];
             }
         },
 
