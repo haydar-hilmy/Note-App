@@ -8,7 +8,9 @@
     "build": "vue-cli-service build",
     "preview": "vite preview",
     "test:unit": "vitest",
-    "serve": "vue-cli-service serve"
+    "serve": "vue-cli-service serve",
+    "build2": "tailwind build -i tailwind/main.css -o public/tailwind.css",
+    "watch": "tailwind build -i tailwind/main.css -o public/tailwind.css -w"
   },
   "dependencies": {
     "jquery": "^3.7.1",
@@ -17,8 +19,24 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
     "@vue/test-utils": "^2.4.4",
+    "autoprefixer": "^10.4.17",
     "jsdom": "^24.0.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
     "vite": "^5.0.11",
     "vitest": "^1.2.2"
-  }
+  },
+  "description": "This template should help get you started developing with Vue 3 in Vite.",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haydar-hilmy/Note-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haydar-hilmy/Note-App/issues"
+  },
+  "homepage": "https://github.com/haydar-hilmy/Note-App#readme"
 }
