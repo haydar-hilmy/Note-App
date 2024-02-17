@@ -5,44 +5,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="icon/notes.png" type="image/x-icon">
-  <!-- <link rel="stylesheet" href="public/tailwind.css"> -->
+  <script src="https://kit.fontawesome.com/a502a8bc22.js" crossorigin="anonymous"></script>
   <link href="tailwind/main.css" rel="stylesheet">
   <title>Note App</title>
 </head>
 
 <body>
 
-  <button class="bg-blue-200">
-    Save Changes
-  </button>
-  <h1 class="text-blue">
-    Hello world!
-  </h1>
-
-
 
   <div id="container">
 
-    <h1>Your Note</h1>
+    <div class="p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg flex items-center space-x-4">
+      <div class="shrink-0">
+        <img class="h-12 w-12" src="icon/notes.png" alt="logo">
+      </div>
+      <div class="flex w-full justify-between items-center">
+        <div>
+          <div class="text-xl font-medium text-black">Note App</div>
+          <p class="text-slate-500">Take Your Note!</p>
+        </div>
+        <i id="addBtn" class="fa-solid fa-plus text-2xl cursor-pointer"></i>
+      </div>
+    </div>
 
-    <button id="show">Show</button>
+    <div id="form_wrap" class="p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg">
+      <form id="formAddNote" class="flex flex-col" @submit.prevent="submitForm">
+        <input required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" type="text"
+          v-model="addNote.title" placeholder="Title Note">
+        <textarea required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" cols="30"
+          v-model="addNote.content" placeholder="Your Note" rows="10"></textarea>
+        <button id="submit" class="p-3 bg-blue-500 text-white rounded-md active:bg-sky-700"
+          type="submit">Submit</button>
+      </form>
+    </div>
 
-    <form @submit.prevent="submitForm">
-      <input type="text" v-model="addNote.title" placeholder="Title Note">
-      <textarea cols="30" v-model="addNote.content" placeholder="Your Note" rows="10"></textarea>
-      <button type="submit">Submit</button>
-    </form>
+    <div class="p-2 max-w-sm mx-auto flex justify-between align-center bg-transparent mt-3">
+      <div class="flex items-center">
+        <h4>Total Checked {{ totalcek }}</h4>
+      </div>
+      <div class="flex flex-row">
+        <h4 class="p-2">Sort</h4>
+        <button class="bg-blue-400 p-2 rounded-sm text-white active:bg-sky-700" @click="sortit"><i
+            class="fa-solid fa-sort"></i></button>
+      </div>
+    </div>
 
-    <button @click="sortit">sort</button>
 
-    <div v-for="note in notes" :key="note.id" id="note_wrap">
+    <div v-for="note in notes" :key="note.id" id="note_wrap"
+      class="p-6 mt-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex justify-between items-center space-x-4">
 
       <div>
-        <h3>{{ note.title }}</h3>
-        <p>{{ note.content }}</p>
+        <h3 class="font-bold text-2xl">{{ note.title }}</h3>
+        <p class="text-base">{{ note.content }}</p>
+      </div>
+
+      <div>
+        <input v-model="note.status" :checked="note.status" @click="cek(note)" class="h-6 w-6" type="checkbox">
       </div>
 
     </div>
+
 
   </div>
 

@@ -2,8 +2,12 @@ import { createApp } from "vue";
 import $ from 'jquery';
 
 $(document).ready(function () {
-    $("#show").click(function () {
-
+    $("#form_wrap").hide();
+    $("#addBtn").click(function () {
+        $("#form_wrap").slideToggle(300);
+    });
+    $("#formAddNote").submit(function(){
+        $("#form_wrap").slideToggle(200);
     });
 });
 
@@ -40,6 +44,13 @@ const app = createApp({
 
     // function here
     methods: {
+        cek(note) {
+            note.status = !note.status; // Pembalikan status buku
+            this.simpanKeLocalStorage(); // Panggil metode untuk menyimpan ke local storage
+        },
+        simpanKeLocalStorage() {
+            localStorage.setItem('noteapp', JSON.stringify(this.notes)); // Simpan items ke local storage
+        },
         submitForm() {
             let notes = JSON.parse(localStorage.getItem('noteapp')) || [];
 
@@ -51,6 +62,8 @@ const app = createApp({
                 notes.push(this.addNote);
 
                 localStorage.setItem('noteapp', JSON.stringify(notes));
+
+                notes.sort((a, b) => b.id - a.id);
                 this.notes = notes;
 
                 this.resetForm();
@@ -96,8 +109,17 @@ const app = createApp({
     // take a data from local storage
     mounted() {
         const get_notes = JSON.parse(localStorage.getItem('noteapp'));
+        get_notes.sort((a, b) => b.id - a.id);
         this.notes = get_notes ? get_notes : [];
     },
+    
+    computed: {
+        totalcek(){
+            let tercek = this.notes.filter(note => note.status).length;
+            let total = `${tercek} / ${this.notes.length}`;
+            return total;
+        }
+    }
 
 
 })
