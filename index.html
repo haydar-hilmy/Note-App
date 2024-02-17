@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="icon/notes.png" type="image/x-icon">
+  <title>Note App</title>
+</head>
+
+<body>
+
+  <div id="container">
+
+    <h1>Your Note</h1>
+
+    <button id="show">Show</button>
+
+    <form @submit.prevent="submitForm">
+      <input type="text" v-model="addNote.title" placeholder="Title Note">
+      <textarea cols="30" v-model="addNote.content" placeholder="Your Note" rows="10"></textarea>
+      <button type="submit">Submit</button>
+    </form>
+
+    <button @click="sortit">sort</button>
+
+    <div v-for="note in notes" :key="note.id" id="note_wrap">
+
+      <div>
+        <h3>{{ note.title }}</h3>
+        <p>{{ note.content }}</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module" src="src/script.js"></script>
+</body>
+
+</html>
