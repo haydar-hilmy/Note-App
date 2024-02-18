@@ -15,7 +15,7 @@
 
   <div id="container">
 
-    <div class="p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg flex items-center space-x-4">
+    <div class="sticky top-0 left-0 p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg flex items-center space-x-4">
       <div class="shrink-0">
         <img class="h-12 w-12" src="icon/notes.png" alt="logo">
       </div>
@@ -24,7 +24,7 @@
           <div class="text-xl font-medium text-black">Note App</div>
           <p class="text-slate-500">Take Your Note!</p>
         </div>
-        <i id="addBtn" class="fa-solid fa-plus text-2xl cursor-pointer"></i>
+        <i id="addBtn" @click="scrollUp" class="fa-solid fa-plus text-2xl cursor-pointer"></i>
       </div>
     </div>
 
@@ -39,7 +39,7 @@
       </form>
     </div>
 
-    <div class="p-2 max-w-sm mx-auto flex justify-between align-center bg-transparent mt-3">
+    <div class="sticky top-28 bg-white p-4 max-w-sm mx-auto flex justify-between align-center bg-transparent mt-3">
       <div class="flex items-center">
         <h4>Total Checked {{ totalcek }}</h4>
       </div>
@@ -72,3 +72,5 @@
 </body>
 
 </html>
+
+<!-- FITUR HAPUS CATATAn -->

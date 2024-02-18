@@ -6,23 +6,13 @@ $(document).ready(function () {
     $("#addBtn").click(function () {
         $("#form_wrap").slideToggle(300);
     });
-    $("#formAddNote").submit(function(){
+    $("#formAddNote").submit(function () {
         $("#form_wrap").slideToggle(200);
     });
 });
 
 
-function get_date() {
-    const currentTime = new Date();
-    const year = currentTime.getFullYear();
-    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2);
-    const date = ('0' + currentTime.getDate()).slice(-2);
-    const hours = ('0' + currentTime.getHours()).slice(-2);
-    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
-    const formattedTimestamp = `${date}-${month}-${year} ${hours}:${minutes}`;
 
-    return formattedTimestamp;
-}
 
 
 const app = createApp({
@@ -36,16 +26,52 @@ const app = createApp({
                 id: '',
                 title: '',
                 content: '',
-                date: get_date(),
-                status: false
+                date: this.get_date(),
+                status: false,
+                timestamp: Date.now()
             }
         }
     },
 
     // function here
     methods: {
+
+
+        // addNote() {
+        //     let newNote = {
+        //         id: '',
+        //         title: this.addNote.title,
+        //         content: this.addNote.content,
+        //         date: get_date(),
+        //         status: false,
+        //         timestamp: Date.now()
+        //     };
+    
+        //     this.notes.push(newNote);
+    
+        //     this.addNote.title = '';
+        //     this.addNote.content = '';
+        //     this.addNote.date = get_date();
+        // },
+
+        get_date() {
+            let currentTime = new Date();
+            let year = currentTime.getFullYear();
+            let month = ('0' + (currentTime.getMonth() + 1)).slice(-2);
+            let date = ('0' + currentTime.getDate()).slice(-2);
+            let hours = ('0' + currentTime.getHours()).slice(-2);
+            let minutes = ('0' + currentTime.getMinutes()).slice(-2);
+            let formattedTimestamp = `${date}-${month}-${year} ${hours}:${minutes}`;
+        
+            return formattedTimestamp;
+        },
+
         cek(note) {
             note.status = !note.status; // Pembalikan status buku
+            let tercek = this.notes.filter(nt => nt.status).length;
+            if (tercek == this.notes.length) {
+                // alert();
+            }
             this.simpanKeLocalStorage(); // Panggil metode untuk menyimpan ke local storage
         },
         simpanKeLocalStorage() {
@@ -55,15 +81,14 @@ const app = createApp({
             let notes = JSON.parse(localStorage.getItem('noteapp')) || [];
 
             if (notes) {
-                let lastNote = notes[notes.length - 1];
-                let newId = lastNote ? parseInt(lastNote.id) + 1 : 1;
-                this.addNote.id = newId.toString();
+                let newId = Math.random().toString(36).substr(2, 6);
+                this.addNote.id = newId;
 
                 notes.push(this.addNote);
 
                 localStorage.setItem('noteapp', JSON.stringify(notes));
 
-                notes.sort((a, b) => b.id - a.id);
+                notes.sort((a, b) => b.timestamp - a.timestamp);
                 this.notes = notes;
 
                 this.resetForm();
@@ -78,30 +103,34 @@ const app = createApp({
                 id: '',
                 title: '',
                 content: '',
-                date: '',
-                status: false
+                date: this.get_date(),
+                status: false,
+                timestamp: Date.now(),
             };
         },
 
-        sortedNotes(){
+        sortedNotes() {
             let notes2 = [...this.notes];
 
             if (this.ascOrder) {
-                notes2.sort((a, b) => {
-                  return a.id.localeCompare(b.id);
-                });
-              } else {
-                notes2.sort((a, b) => {
-                  return b.id.localeCompare(a.id);
-                });
-              }
+                notes2.sort((a, b) => a.timestamp - b.timestamp);
+            } else {
+                notes2.sort((a, b) => b.timestamp - a.timestamp);
+            }
 
-              return this.notes = notes2;
+            return this.notes = notes2;
         },
 
-        sortit(){
+        sortit() {
             this.ascOrder = !this.ascOrder;
             this.sortedNotes();
+        },
+
+        scrollUp() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
         }
 
     },
@@ -109,12 +138,17 @@ const app = createApp({
     // take a data from local storage
     mounted() {
         const get_notes = JSON.parse(localStorage.getItem('noteapp'));
-        get_notes.sort((a, b) => b.id - a.id);
-        this.notes = get_notes ? get_notes : [];
+        if (get_notes) {
+            get_notes.sort((a, b) => a.timestamp - b.timestamp);
+            this.notes = get_notes;
+        } else {
+            this.notes = [];
+        }
+
     },
-    
+
     computed: {
-        totalcek(){
+        totalcek() {
             let tercek = this.notes.filter(note => note.status).length;
             let total = `${tercek} / ${this.notes.length}`;
             return total;
