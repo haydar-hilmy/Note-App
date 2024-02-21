@@ -1,0 +1,6 @@
+.active{
+    transition-duration: 300ms;
+    opacity: 0.5;
+    box-shadow: none !important;
+    transform: scale(0.98);
+}

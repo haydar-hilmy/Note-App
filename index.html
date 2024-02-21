@@ -7,70 +7,85 @@
   <link rel="shortcut icon" href="icon/notes.png" type="image/x-icon">
   <script src="https://kit.fontawesome.com/a502a8bc22.js" crossorigin="anonymous"></script>
   <link href="tailwind/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="public/mystyle.css">
   <title>Note App</title>
 </head>
 
 <body>
 
 
-  <div id="container">
+  <div id="container-wrap">
 
-    <div class="sticky top-0 left-0 p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg flex items-center space-x-4">
-      <div class="shrink-0">
-        <img class="h-12 w-12" src="icon/notes.png" alt="logo">
-      </div>
-      <div class="flex w-full justify-between items-center">
-        <div>
-          <div class="text-xl font-medium text-black">Note App</div>
-          <p class="text-slate-500">Take Your Note!</p>
+    <div id="container" v-if="!visibleNote">
+
+      <div
+        class="z-10 sticky top-0 left-0 p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg flex items-center space-x-4">
+        <div class="shrink-0">
+          <img class="h-12 w-12" src="icon/notes.png" alt="logo">
         </div>
-        <i id="addBtn" @click="scrollUp" class="fa-solid fa-plus text-2xl cursor-pointer"></i>
+        <div class="flex w-full justify-between items-center">
+          <div>
+            <div class="text-xl font-medium text-black">Note App</div>
+            <p class="text-slate-500">Take Your Note!</p>
+          </div>
+          <i id="addBtn" @click="scrollUp" class="fa-solid fa-plus text-2xl cursor-pointer"></i>
+        </div>
+      </div>
+
+      <div id="form_wrap" class="p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg">
+        <form id="formAddNote" class="flex flex-col" @submit.prevent="submitForm">
+          <input required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" type="text"
+            v-model="addNote.title" placeholder="Title Note">
+          <textarea required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" cols="30"
+            v-model="addNote.content" placeholder="Your Note" rows="10"></textarea>
+          <button id="submit" class="p-3 bg-blue-500 text-white rounded-md active:bg-sky-700"
+            type="submit">Submit</button>
+        </form>
+      </div>
+
+      <div class="z-10 sticky top-28 bg-white p-4 max-w-sm mx-auto flex justify-between align-center mt-3">
+        <div class="flex items-center">
+          <h4>Total Checked {{ totalcek }}</h4>
+        </div>
+        <div class="flex flex-row">
+          <h4 class="p-2">Sort</h4>
+          <button class="bg-blue-400 p-2 rounded-sm text-white active:bg-sky-700" @click="sortit"><i
+              class="fa-solid fa-sort"></i></button>
+        </div>
+      </div>
+
+      <div v-for="note in notes" :key="note.id">
+      <div :class="{'active': note.status}"
+        class="p-6 mt-6 max-w-sm mx-auto rounded-xl shadow-lg flex justify-between items-center space-x-4 duration-150">
+
+        <div>
+          <h3 class="font-bold text-2xl">{{ note.title }}</h3>
+          <p class="text-base w-full overflow-hidden outline-none h-auto">{{ note.content }}</p>
+        </div>
+
+        <div class="flex flex-row items-center gap-4">
+          <input v-model="note.status" :checked="note.status" @click="cek(note);" class="h-6 w-6" type="checkbox">
+          <i @click="showNote(note.id)" class="fa-solid fa-pen-to-square text-2xl text-blue-800 cursor-pointer"></i>
+        </div>
+
       </div>
     </div>
 
-    <div id="form_wrap" class="p-6 max-w-sm mx-auto bg-white mt-3 rounded-xl shadow-lg">
-      <form id="formAddNote" class="flex flex-col" @submit.prevent="submitForm">
-        <input required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" type="text"
-          v-model="addNote.title" placeholder="Title Note">
-        <textarea required class="mb-2 p-3 border-2 outline-2 outline-blue-700 rounded-md border-sky-400" cols="30"
-          v-model="addNote.content" placeholder="Your Note" rows="10"></textarea>
-        <button id="submit" class="p-3 bg-blue-500 text-white rounded-md active:bg-sky-700"
-          type="submit">Submit</button>
-      </form>
+      
     </div>
-
-    <div class="sticky top-28 bg-white p-4 max-w-sm mx-auto flex justify-between align-center bg-transparent mt-3">
-      <div class="flex items-center">
-        <h4>Total Checked {{ totalcek }}</h4>
-      </div>
-      <div class="flex flex-row">
-        <h4 class="p-2">Sort</h4>
-        <button class="bg-blue-400 p-2 rounded-sm text-white active:bg-sky-700" @click="sortit"><i
-            class="fa-solid fa-sort"></i></button>
-      </div>
+    
+    <div id="note-modal-wrap" v-if="visibleNote" class="p-6 mt-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex flex-col items-start">
+      <input @input="edited(getNote.id)" class="p-2 text-2xl w-full outline-none border-b-2 border-sky-200 focus:border-sky-700 font-bold" v-model="getNote.title">
+      <textarea @input="edited(getNote.id)" class="mt-4 p-2 h-28 w-full outline-none border-b-2 border-sky-200 focus:border-sky-700" v-model="getNote.content"></textarea>
+      <p class="text-sm text-center w-full mt-3 text-green-600" v-if="autoSaved">Auto Saved</p>
+      <button class="w-full mt-4 p-3 bg-blue-500 text-white rounded-md text-base active:bg-sky-700" @click="showNote(); visibleTxtInfo()">Back</button>
+      <button @click="deleteNote(getNote.id); showNote(); visibleTxtInfo()" class="w-full mt-4 p-3 bg-transparent border-2 border-sky-700 rounded-md text-sky-700 text-base">Delete</button>
     </div>
-
-
-    <div v-for="note in notes" :key="note.id" id="note_wrap"
-      class="p-6 mt-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex justify-between items-center space-x-4">
-
-      <div>
-        <h3 class="font-bold text-2xl">{{ note.title }}</h3>
-        <p class="text-base">{{ note.content }}</p>
-      </div>
-
-      <div>
-        <input v-model="note.status" :checked="note.status" @click="cek(note)" class="h-6 w-6" type="checkbox">
-      </div>
-
-    </div>
-
-
+    
   </div>
-
+  
+  
   <script type="module" src="src/script.js"></script>
 </body>
 
 </html>
-
-<!-- FITUR HAPUS CATATAn -->
