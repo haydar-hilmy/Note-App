@@ -4,3 +4,13 @@
     box-shadow: none !important;
     transform: scale(0.98);
 }
+
+.btn-setting-wrap{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.btn-setting-wrap img{
+    width: 45px;
+    cursor: pointer;
+}
