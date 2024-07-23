@@ -10,7 +10,7 @@ const app = createApp({
             visibleNote: false,
             ascOrder: false,
             notes: [],
-            addNote: {
+            addNote: {  
                 id: '',
                 title: '',
                 content: '',
